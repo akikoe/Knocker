@@ -13,7 +13,6 @@ def concatenate(lst):
     for i in range(n):
         j = 2*i +1
         word += lst[j]
-        print lst[j]
     return word
 
 def main():
@@ -21,9 +20,8 @@ def main():
 
     print "before:", mojis
     u_mojis  = unicode(mojis, "utf-8")  # -> unicode
-    moji_lst = list(u_mojis)     # string -> list
-    word_lst = concatenate(moji_lst)
-    words    = "".join(word_lst) # list -> string
+    moji_lst = list(u_mojis)            # string -> list
+    words    = concatenate(moji_lst)    # list -> string
     print "after: ", words
     
 if __name__ == "__main__":
