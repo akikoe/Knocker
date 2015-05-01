@@ -8,7 +8,7 @@
 
 def main():
     file = './hightemp.txt'
-    f    = open(file)
+    f    = open(file, 'r')
     doc  = []
     line = f.readline()
 

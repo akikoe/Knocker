@@ -10,7 +10,7 @@ import subprocess
 
 def main():
     file = './hightemp.txt'
-    f    = open(file)
+    f    = open(file, 'r')
     line = f.readline()
 
     i = 0    
@@ -21,7 +21,7 @@ def main():
     print "Python counts: %d" % i 
 
     print "$ wc %s" % file
-    subprocess.Popen(["wc", file], )
+    subprocess.Popen(["wc", file])
         
 if __name__ == "__main__":
     main()
