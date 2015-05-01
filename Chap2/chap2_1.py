@@ -12,11 +12,9 @@ def main():
     doc  = []
     line = f.readline()
 
-    i = 0    
     while line:
         text = unicode(line, "utf-8").split("\t")
         doc.append(" ".join(text))
-        i += 1
         line = f.readline()
     f.close()
     print "Python does: %s" % "".join(doc)

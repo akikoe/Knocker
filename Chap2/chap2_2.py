@@ -15,7 +15,6 @@ def main():
     f3   = open(file3, 'w')
     line = f.readline()
 
-    i = 0    
     while line:
         text = unicode(line, "utf-8").split("\t")
         f2.writelines(text[0].encode("utf-8") +"\n")
