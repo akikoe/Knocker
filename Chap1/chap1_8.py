@@ -24,13 +24,27 @@ def cipher(lst):
             else:
                 code += c
     return code
-    
+
+def decipher(lst):
+    code = ""
+
+    for word in lst:
+        for c in list(word):
+            if c.islower():
+                code += chr(219 - ord(c))
+            else:
+                code += c
+    return code
+                
+
 def main():
     print "Input text:"
     text = sys.stdin.readline()
     w_lst  = list(text.rstrip("\n"))
     code  = cipher(w_lst) # list -> str
     print "Text in cipher: %s" % (code)
-
+    code = decipher(list(code))
+    print "Text in decipher: %s" % (code)
+    
 if __name__ == "__main__":
     main()
