@@ -17,6 +17,7 @@ def main():
     while line:
         line = f.readline()
         i += 1
+    f.close()
     print "Python counts: %d" % i 
 
     print "$ wc %s" % file
