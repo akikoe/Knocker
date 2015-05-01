@@ -23,7 +23,7 @@ def main():
     re_lst   = reverse(moji_lst)
     re_mojis = "".join(re_lst) # list -> string
 
-    print "after: ", re_mojis
+    print "after: ", re_mojis # moji_lst[::-1]
 
 if __name__ == "__main__":
     main()
