@@ -7,11 +7,19 @@ Wikipedia記事のJSONファイルを読み込み，「イギリス」に関す�
 """
 
 import json
+import re
 
 """
 21. カテゴリ名を含む行を抽出
 記事中でカテゴリ名を宣言している行を抽出せよ．
 """
+def ExtSenOfEnCate(data):
+    p = re.compile(".*Category.*")
+    sen_lst = data["text"].split("\n")
+    for i in sen_lst:
+        m = p.search(i)
+        if m:
+            print m.group()
 
 def main():
     f_path = './jawiki-country.json'
@@ -24,7 +32,10 @@ def main():
             print data["text"] # Chap3-0
             break
         line = f.readline()
-        
+
+    print "\n(3-1):"
+    ExtSenOfEnCate(data) # Chap3-1
+
 if __name__ == "__main__":
     main()
 
