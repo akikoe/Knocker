@@ -21,6 +21,11 @@ def ExtSenOfEnCate(data):
         if m:
             print m.group()
 
+"""
+22. カテゴリ名の抽出
+記事のカテゴリ名を（行単位ではなく名前で）抽出せよ．
+"""
+            
 def main():
     f_path = './jawiki-country.json'
     f = open(f_path, 'r')
