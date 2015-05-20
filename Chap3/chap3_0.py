@@ -29,7 +29,7 @@ def ExtSenOfEnCate(data):
 記事のカテゴリ名を（行単位ではなく名前で）抽出せよ．
 """
 def ExtCateNameOfEn(lst):
-    p  = re.compile(":.*?]")
+    p  = re.compile(":.*?\]")
     for i in lst:
         m = p.search(i)
         if m:
@@ -49,7 +49,21 @@ def SectStruct(data):
             count =  (moji.count("=")/2) -1
             print moji.replace("=", ""), count
             
-            
+"""
+24. ファイル参照の抽出
+記事から参照されているメディアファイルをすべて抜き出せ．
+"""
+def ExtFileRef(data):
+    p  = re.compile(u"\[\[ファイル.*?\||\[\[File.*?\|")
+    p2 = re.compile(u"\[\[ファイル:|\[\[File:")
+    sen_lst = data["text"].split("\n")
+    for i in sen_lst:
+        m = p.search(i)
+        if m:
+            moji = m.group()
+            moji = p2.sub("", moji)
+            print moji.replace("|", "")
+
 def main():
     f_path = './jawiki-country.json'
     f = open(f_path, 'r')
@@ -70,7 +84,10 @@ def main():
 
     print "\n(3-3):"
     SectStruct(data)
-    
+
+    print "\n(3-4):"
+    ExtFileRef(data)
+
 if __name__ == "__main__":
     main()
 
