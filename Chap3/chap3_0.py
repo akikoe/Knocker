@@ -35,6 +35,21 @@ def ExtCateNameOfEn(lst):
         if m:
             print m.group().lstrip(":").rstrip("]")
 
+"""
+23. セクション構造
+記事中に含まれるセクション名とそのレベル（例えば"== セクション名 =="なら1）を表示せよ．
+"""
+def SectStruct(data):
+    p = re.compile("==.+==")
+    sen_lst = data["text"].split("\n")
+    for i in sen_lst:
+        m = p.search(i)
+        if m:
+            moji  = m.group()
+            count =  (moji.count("=")/2) -1
+            print moji.replace("=", ""), count
+            
+            
 def main():
     f_path = './jawiki-country.json'
     f = open(f_path, 'r')
@@ -52,6 +67,9 @@ def main():
 
     print "\n(3-2):"
     ExtCateNameOfEn(cate_lst)
+
+    print "\n(3-3):"
+    SectStruct(data)
     
 if __name__ == "__main__":
     main()
