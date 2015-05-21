@@ -81,7 +81,9 @@ def ExtTemplate(data):
         moji = moji.split("\n|")
         for i in moji[1:]:
             i = i.split(" = ")
-            temp_dic[i[0]] = RmMarkup(i[1])
+            i[1] = RmMarkup(i[1])    # Remove MarkUp Emphasizing
+            i[1] = RmInnerLink(i[1]) # Remove Markup Inner Link
+            temp_dic[i[0]] = i[1]
             
 """
 26. 強調マークアップの除去
@@ -95,6 +97,28 @@ def RmMarkup(line):
         print "\n(3-6):"
         line = m.group(1)
     return line
+
+"""
+27. 内部リンクの除去
+26の処理に加えて，テンプレートの値からMediaWikiの内部リンクマークアップを除去し，テキストに変換せよ（参考: マークアップ早見表）．
+"""
+def RmInnerLink(line):
+    r  = u"\[\[(.+?)\]\]" # 内部リンク
+    r2 = u"\||\#"
+    p  = re.compile(r)
+    p2 = re.compile(r2) 
+    iterator = p.finditer(line)
+    line2 = ""
+    start = 0
+    print "\n(3-7):"
+    for i in iterator:
+        line2 += line[start:i.start()] + p2.sub("", i.group(1))
+        start = i.end()
+    if start <= len(line):
+        line2 += line[start:]
+        #print line2        
+    return line2
+    
 
 def main():
     f_path = './jawiki-country.json'
