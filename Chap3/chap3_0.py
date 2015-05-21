@@ -64,6 +64,26 @@ def ExtFileRef(data):
             moji = p2.sub("", moji)
             print moji.replace("|", "")
 
+"""
+25. テンプレートの抽出
+記事中に含まれる「基礎情報」テンプレートのフィールド名と値を抽出し，辞書オブジェクトとして格納せよ．
+"""
+def ExtTemplate(data):
+    temp_dic = {}
+    
+    p  = re.compile(u"\{\{基礎情報(.*\n)+?\}\}")
+    p2 = re.compile(u".*?=")
+    sen_lst = data["text"]
+    m    = p.search(sen_lst)
+    if m:
+        moji = m.group()
+        moji = re.sub(u"(\{\{)|(\n\}\})","", moji) # "{{", "}}"除去
+        moji = moji.split("\n|")
+        for i in moji[1:]:
+            i = i.split(" = ")
+            temp_dic[i[0]] = i[1]
+
+            
 def main():
     f_path = './jawiki-country.json'
     f = open(f_path, 'r')
@@ -87,6 +107,10 @@ def main():
 
     print "\n(3-4):"
     ExtFileRef(data)
+
+    print "\n(3-5):"
+    ExtTemplate(data)
+
 
 if __name__ == "__main__":
     main()
