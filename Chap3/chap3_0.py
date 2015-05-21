@@ -6,7 +6,7 @@
 Wikipedia記事のJSONファイルを読み込み，「イギリス」に関する記事本文を表示せよ．問題21-29では，ここで抽出した記事本文に対して実行せよ．
 """
 
-import json
+import json, urllib
 import re
 
 """
@@ -85,6 +85,7 @@ def ExtTemplate(data):
             i[1] = RmInnerLink(i[1])   # Remove Markup Inner Link
             i[1] = RmOtherMarkup(i[1]) # Remove Other Markup
             temp_dic[i[0]] = i[1]
+    return temp_dic
             
 """
 26. 強調マークアップの除去
@@ -138,7 +139,23 @@ def RmOtherMarkup(line):
     print "\n(3-8):"
     #print line
     return line
+
+"""
+29. 国旗画像のURLを取得する
+テンプレートの内容を利用し，国旗画像のURLを取得せよ．（ヒント: MediaWiki APIのimageinfoを呼び出して，ファイル参照をURLに変換すればよい）
+"""
+def GetFlagURL(temp_dic):    
+    title = temp_dic[u"国旗画像"]
+    title = title.replace(" ", "%20")
     
+    URL = "http://en.wikipedia.org/w/api.php?action=query&prop=imageinfo&iiprop=url&format=json&titles=File:" + title # Wikipedia API
+    opener = urllib.urlopen(URL)
+    data = opener.read()
+    file_data = json.loads(data)
+    # print(json.dumps(file_data, sort_keys=True, indent=4)) # 中身表示
+    key_num = file_data["query"]["pages"].keys()[0]
+    print file_data["query"]["pages"][key_num]["imageinfo"][0]["url"]
+
 def main():
     f_path = './jawiki-country.json'
     f = open(f_path, 'r')
@@ -164,8 +181,10 @@ def main():
     ExtFileRef(data)
 
     print "\n(3-5):"
-    ExtTemplate(data)
+    temp_dic = ExtTemplate(data)
 
+    print "\n(3-9):"
+    GetFlagURL(temp_dic)
 
 if __name__ == "__main__":
     main()
