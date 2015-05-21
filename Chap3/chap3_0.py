@@ -92,11 +92,17 @@ def ExtTemplate(data):
 def RmMarkup(line):
     r = u"\'\'[\']*(.+?)\'\'[\']*" # 弱い強調/ 強調/ 強い強調
     p = re.compile(r)
-    m = p.search(line)
-    if m:
-        print "\n(3-6):"
-        line = m.group(1)
-    return line
+    iterator = p.finditer(line)
+    line2 = ""
+    start = 0
+    print "\n(3-6):"
+    for i in iterator:
+        line2 += line[start:i.start()] + i.group(1)
+        start = i.end()
+    if start <= len(line):
+        line2 += line[start:]
+        #print line2        
+    return line2
 
 """
 27. 内部リンクの除去
