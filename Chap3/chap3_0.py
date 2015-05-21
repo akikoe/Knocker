@@ -81,8 +81,9 @@ def ExtTemplate(data):
         moji = moji.split("\n|")
         for i in moji[1:]:
             i = i.split(" = ")
-            i[1] = RmMarkup(i[1])    # Remove MarkUp Emphasizing
-            i[1] = RmInnerLink(i[1]) # Remove Markup Inner Link
+            i[1] = RmMarkup(i[1])      # Remove MarkUp Emphasizing
+            i[1] = RmInnerLink(i[1])   # Remove Markup Inner Link
+            i[1] = RmOtherMarkup(i[1]) # Remove Other Markup
             temp_dic[i[0]] = i[1]
             
 """
@@ -90,8 +91,7 @@ def ExtTemplate(data):
 25の処理時に，テンプレートの値からMediaWikiの強調マークアップ（弱い強調，強調，強い強調のすべて）を除去してテキストに変換せよ（参考: マークアップ早見表）．
 """
 def RmMarkup(line):
-    r = u"\'\'[\']*(.+?)\'\'[\']*" # 弱い強調/ 強調/ 強い強調
-    p = re.compile(r)
+    p = re.compile(u"\'\'[\']*(.+?)\'\'[\']*") # 弱い強調/ 強調/ 強い強調
     iterator = p.finditer(line)
     line2 = ""
     start = 0
@@ -109,10 +109,8 @@ def RmMarkup(line):
 26の処理に加えて，テンプレートの値からMediaWikiの内部リンクマークアップを除去し，テキストに変換せよ（参考: マークアップ早見表）．
 """
 def RmInnerLink(line):
-    r  = u"\[\[(.+?)\]\]" # 内部リンク
-    r2 = u"\||\#"
-    p  = re.compile(r)
-    p2 = re.compile(r2) 
+    p  = re.compile(u"\[\[(.+?)\]\]") # 内部リンク
+    p2 = re.compile(u"\||\#") 
     iterator = p.finditer(line)
     line2 = ""
     start = 0
@@ -124,8 +122,23 @@ def RmInnerLink(line):
         line2 += line[start:]
         #print line2        
     return line2
-    
 
+"""
+28. MediaWikiマークアップの除去
+27の処理に加えて，テンプレートの値からMediaWikiマークアップを可能な限り除去し，国の基本情報を整形せよ．
+"""
+def RmOtherMarkup(line):
+    p  = re.compile(u"<(.+?)>|\}+") # <タグ>, 括弧あまり
+    p2 = re.compile(u"\n\*+")         # 箇条書き, 
+    p3 = re.compile(u"\||\[|\]")      # |, [, ] 1文字記号
+    
+    line = p.sub("", line)
+    line = p2.sub("\n", line)
+    line = p3.sub(" ", line)
+    print "\n(3-8):"
+    #print line
+    return line
+    
 def main():
     f_path = './jawiki-country.json'
     f = open(f_path, 'r')
