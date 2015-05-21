@@ -81,9 +81,21 @@ def ExtTemplate(data):
         moji = moji.split("\n|")
         for i in moji[1:]:
             i = i.split(" = ")
-            temp_dic[i[0]] = i[1]
-
+            temp_dic[i[0]] = RmMarkup(i[1])
             
+"""
+26. 強調マークアップの除去
+25の処理時に，テンプレートの値からMediaWikiの強調マークアップ（弱い強調，強調，強い強調のすべて）を除去してテキストに変換せよ（参考: マークアップ早見表）．
+"""
+def RmMarkup(line):
+    r = u"\'\'[\']*(.+?)\'\'[\']*" # 弱い強調/ 強調/ 強い強調
+    p = re.compile(r)
+    m = p.search(line)
+    if m:
+        print "\n(3-6):"
+        line = m.group(1)
+    return line
+
 def main():
     f_path = './jawiki-country.json'
     f = open(f_path, 'r')
