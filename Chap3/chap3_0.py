@@ -167,7 +167,8 @@ def main():
             print data["text"] # Chap3-0
             break
         line = f.readline()
-
+    f.close()
+        
     print "\n(3-1):"
     cate_lst = ExtSenOfEnCate(data) # Chap3-1
 
