@@ -62,10 +62,36 @@ def ExtractNouns(lst):
             m_dic["surf"]
             #print m_dic["surf"] # chap4_3
 
+"""
+34. 「AのB」
+2つの名詞が「の」で連結されている名詞句を抽出せよ．
+"""
+def ExtractNounPhrase(lst):
+    flag   = 0
+    phrase = ""
+    
+    for m_dic in lst:
+        if flag == 0 and m_dic["pos"] == "名詞":
+            phrase += m_dic["surf"]
+            flag = 1
+        elif flag == 1 and m_dic["surf"] == "の":
+            phrase += m_dic["surf"]
+            flag = 2
+        elif flag == 2 and m_dic["pos"] == "名詞":
+            phrase += m_dic["surf"]
+            print phrase
+            flag = 0
+            phrase = ""
+        else:
+            flag   = 0
+            phrase = ""
+            
+        
 def main():
     lst = MakeMorphoDic("./neko.txt.mecab") # chap4_0
     ExtractVerbs(lst)
     ExtractNouns(lst)
+    ExtractNounPhrase(lst)
     
 if __name__ == "__main__":
     main()
