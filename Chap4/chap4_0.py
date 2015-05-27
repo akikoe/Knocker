@@ -51,10 +51,21 @@ def ExtractVerbs(lst):
             #print m_dic["surf"]           # chap4_1
             m_dic["base"]
             #print m_dic["base"]           # chap4_2
-            
+
+"""
+33. サ変名詞
+サ変接続の名詞をすべて抽出せよ．
+"""
+def ExtractNouns(lst):
+    for m_dic in lst:
+        if m_dic["pos"] == "名詞" and m_dic["pos1"] == "サ変接続":
+            m_dic["surf"]
+            #print m_dic["surf"] # chap4_3
+
 def main():
     lst = MakeMorphoDic("./neko.txt.mecab") # chap4_0
     ExtractVerbs(lst)
+    ExtractNouns(lst)
     
 if __name__ == "__main__":
     main()
