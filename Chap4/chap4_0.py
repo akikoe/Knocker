@@ -37,9 +37,20 @@ def MakeMorphoDic(path):
     f.close()
     return m_dic_lst
 
-
+"""
+31. 動詞
+動詞の表層形をすべて抽出せよ．
+"""
+def ExtractVerbs(lst):
+    verb_lst = []
+    for m_dic in lst:
+        if m_dic["pos"] == "動詞":
+            verb_lst.append(m_dic["surf"])
+            #print m_dic["surf"]
+            
 def main():
-    MakeMorphoDic("./neko.txt.mecab")
+    lst = MakeMorphoDic("./neko.txt.mecab") # chap4_0
+    ExtractVerbs(lst)                       # chap4_1
     
 if __name__ == "__main__":
     main()
