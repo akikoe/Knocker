@@ -109,12 +109,32 @@ def ExtractLongestNouns(lst):
                 #if len(phrase) > 1: print ''.join(phrase)
                 phrase = []
 
+"""
+36. 単語の出現頻度
+文章中に出現する単語とその出現頻度を求め，出現頻度の高い順に並べよ．
+"""
+def SortWordFreq(lst):
+    wdic = {}
+    wlst  = []
+    for sen in lst:
+        for m_dic in sen:
+            word = m_dic["surf"]
+            if word in wdic:
+                wdic[word] += 1
+            else:
+                wdic[word] = 1
+    wlst = [(k, v) for k, v in wdic.items()]
+    wlst = sorted(wlst, reverse=True, key=lambda x:x[1])
+    for i in range(10):
+        print wlst[i][0], wlst[i][1]
+                
 def main():
     lst = MakeMorphoDic("./neko.txt.mecab") # chap4_0
     ExtractVerbs(lst)
     ExtractNouns(lst)
     ExtractNounPhrase(lst)
     ExtractLongestNouns(lst)
+    SortWordFreq(lst)
     
 if __name__ == "__main__":
     main()
