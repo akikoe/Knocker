@@ -157,6 +157,19 @@ def DisplayWordKind(wlst):
     ax.hist([j for i, j in wlst])
     plt.show()
 
+"""
+39. Zipfの法則
+単語の出現頻度順位を横軸，その出現頻度を縦軸として，両対数グラフをプロットせよ．
+"""
+def DisplayLogFig(wlst):
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1) # プロット領域（1x1分割の1番目に領域を配置せよという意味）
+    ax.set_title(u"出現頻度順位毎の単語の出現頻度")
+    ax.set_xlabel(u"出現頻度順位")
+    ax.set_ylabel(u"出現頻度")
+    ax.loglog(range(1, len(wlst)+1), [j for i, j in wlst])
+    plt.show()
+
     
 def main():
     lst = MakeMorphoDic("./neko.txt.mecab") # chap4_0
@@ -166,7 +179,8 @@ def main():
     ExtractLongestNouns(lst)
     wlst = SortWordFreq(lst)
     #DisplayTop10(wlst)
-    DisplayWordKind(wlst)
+    #DisplayWordKind(wlst)
+    DisplayLogFig(wlst)
     
 if __name__ == "__main__":
     main()
