@@ -11,6 +11,7 @@
 
 import sys
 import re
+from matplotlib import pyplot as plt
 
 """
 30. 形態素解析結果の読み込み
@@ -125,16 +126,32 @@ def SortWordFreq(lst):
                 wdic[word] = 1
     wlst = [(k, v) for k, v in wdic.items()]
     wlst = sorted(wlst, reverse=True, key=lambda x:x[1])
-    for i in range(10):
-        print wlst[i][0], wlst[i][1]
-                
+    #    for i in range(10):
+    #        print wlst[i][0], wlst[i][1]
+    return wlst
+
+"""
+37. 頻度上位10語
+出現頻度が高い10語とその出現頻度をグラフ（例えば棒グラフなど）で表示せよ．
+"""
+def DisplayTop10(wlst):
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    ax.set_title(u"単語の出現頻度")
+    ax.set_xlabel(u"単語")
+    ax.set_ylabel(u"出現頻度")
+    ax.bar(range(10), [j for i, j in wlst[:10]], align="center")
+    plt.xticks(range(10), [unicode(i, "utf-8") for i, j in wlst[:10]])
+    plt.show()
+
 def main():
     lst = MakeMorphoDic("./neko.txt.mecab") # chap4_0
     ExtractVerbs(lst)
     ExtractNouns(lst)
     ExtractNounPhrase(lst)
     ExtractLongestNouns(lst)
-    SortWordFreq(lst)
+    wlst = SortWordFreq(lst)
+    DisplayTop10(wlst)
     
 if __name__ == "__main__":
     main()
