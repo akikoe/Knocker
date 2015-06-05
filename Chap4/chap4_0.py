@@ -144,6 +144,20 @@ def DisplayTop10(wlst):
     plt.xticks(range(10), [unicode(i, "utf-8") for i, j in wlst[:10]])
     plt.show()
 
+"""
+38. ヒストグラム
+単語の出現頻度のヒストグラム（横軸に出現頻度，縦軸に出現頻度をとる単語の種類数を棒グラフで表したもの）を描け．
+"""
+def DisplayWordKind(wlst):
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1) # プロット領域（1x1分割の1番目に領域を配置せよという意味）
+    ax.set_title(u"出現頻度毎の単語の種類数")
+    ax.set_xlabel(u"出現頻度")
+    ax.set_ylabel(u"単語種類数")
+    ax.hist([j for i, j in wlst])
+    plt.show()
+
+    
 def main():
     lst = MakeMorphoDic("./neko.txt.mecab") # chap4_0
     ExtractVerbs(lst)
@@ -151,7 +165,8 @@ def main():
     ExtractNounPhrase(lst)
     ExtractLongestNouns(lst)
     wlst = SortWordFreq(lst)
-    DisplayTop10(wlst)
+    #DisplayTop10(wlst)
+    DisplayWordKind(wlst)
     
 if __name__ == "__main__":
     main()
