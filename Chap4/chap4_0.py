@@ -95,12 +95,27 @@ def ExtractNounPhrase(lst):
                 flag   = 0
                 phrase = ""
             
-        
+"""
+35. 名詞の連接
+名詞の連接（連続して出現する名詞）を最長一致で抽出せよ．
+"""
+def ExtractLongestNouns(lst):
+    for sen in lst:
+        phrase = []
+        for num, m_dic in enumerate(sen):
+            if m_dic["pos"] == "名詞":
+                phrase.append(m_dic["surf"])
+            else:
+                if len(phrase) > 1: print ''.join(phrase)
+                phrase = []
+
+                
 def main():
     lst = MakeMorphoDic("./neko.txt.mecab") # chap4_0
     ExtractVerbs(lst)
     ExtractNouns(lst)
     ExtractNounPhrase(lst)
+    ExtractLongestNouns(lst)
     
 if __name__ == "__main__":
     main()
