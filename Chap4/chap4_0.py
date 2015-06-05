@@ -102,14 +102,13 @@ def ExtractNounPhrase(lst):
 def ExtractLongestNouns(lst):
     for sen in lst:
         phrase = []
-        for num, m_dic in enumerate(sen):
+        for m_dic in sen:
             if m_dic["pos"] == "名詞":
                 phrase.append(m_dic["surf"])
             else:
-                if len(phrase) > 1: print ''.join(phrase)
+                #if len(phrase) > 1: print ''.join(phrase)
                 phrase = []
 
-                
 def main():
     lst = MakeMorphoDic("./neko.txt.mecab") # chap4_0
     ExtractVerbs(lst)
