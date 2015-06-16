@@ -142,7 +142,8 @@ def DisplayTop10(wlst):
     ax.set_ylabel(u"出現頻度")
     ax.bar(range(10), [j for i, j in wlst[:10]], align="center")
     plt.xticks(range(10), [unicode(i, "utf-8") for i, j in wlst[:10]])
-    plt.show()
+    #plt.show()
+    plt.savefig("bar.png")
 
 """
 38. ヒストグラム
@@ -155,7 +156,8 @@ def DisplayWordKind(wlst):
     ax.set_xlabel(u"出現頻度")
     ax.set_ylabel(u"単語種類数")
     ax.hist([j for i, j in wlst])
-    plt.show()
+    #plt.show()
+    plt.savefig("histogram.png")
 
 """
 39. Zipfの法則
@@ -168,7 +170,8 @@ def DisplayLogFig(wlst):
     ax.set_xlabel(u"出現頻度順位")
     ax.set_ylabel(u"出現頻度")
     ax.loglog(range(1, len(wlst)+1), [j for i, j in wlst])
-    plt.show()
+    #plt.show()
+    plt.savefig("Zipf.png")
 
     
 def main():
@@ -178,8 +181,8 @@ def main():
     ExtractNounPhrase(lst)
     ExtractLongestNouns(lst)
     wlst = SortWordFreq(lst)
-    #DisplayTop10(wlst)
-    #DisplayWordKind(wlst)
+    DisplayTop10(wlst)
+    DisplayWordKind(wlst)
     DisplayLogFig(wlst)
     
 if __name__ == "__main__":
