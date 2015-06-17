@@ -75,8 +75,8 @@ class Chunk:
                  
         p = re.compile(u"<chunk id=\"(.*?)\" link=\"(.*?)\".*?</chunk>")
         m = p.match(tokens)
-        self.dst  = m.group(2)  # 係り先の文節インデックス番号
-        self.scrs = [m.group(0)] # 係り元文節インデックス番号のリスト
+        self.dst  = int(m.group(2))  # 係り先の文節インデックス番号
+        self.scrs = [int(m.group(1))] # 係り元文節インデックス番号のリスト
 
 def make_chunk(path):
     lst = read(path)
@@ -98,7 +98,27 @@ def show_chunk(lst): # 8文目の文節の文字列と係り先を表示
         for j in i.morphs:
             moji += j.surface
         print moji, i.dst
-        
+
+"""
+42. 係り元と係り先の文節の表示
+係り元の文節と係り先の文節のテキストをタブ区切り形式ですべて抽出せよ．ただし，句読点などの記号は出力しないようにせよ．
+"""
+def add_words(lst, moji):
+    for k in lst: # chunk中の単語
+        if k.pos != "記号":
+            moji+= k.surface
+    return moji 
+
+def show_dependency(lst):
+    for i in lst:
+        for j in i: # 1文中のchunk
+            moji = ""
+            moji = add_words(j.morphs, moji)
+            moji += "\t"
+            if j.dst != -1:
+                moji = add_words(i[j.dst].morphs, moji)
+            print moji
+                
 def main():
     # Chap5_0
     morph_lst = make_morph("./neko.txt.cabocha")
@@ -107,6 +127,9 @@ def main():
     # Chap5_1
     chunk_lst = make_chunk("./neko.txt.cabocha")
     show_chunk(chunk_lst)
+
+    # Chap5_2
+    show_dependency(chunk_lst)
     
 if __name__ == "__main__":
     main()       
