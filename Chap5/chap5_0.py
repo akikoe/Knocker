@@ -60,10 +60,53 @@ def show_morph(lst): # 3文目の形態素列を表示
     for i in lst[2]:
         print i.surface
 
+"""
+41. 係り受け解析結果の読み込み（文節・係り受け）
+40に加えて，文節を表すクラスChunkを実装せよ．このクラスは形態素（Morphオブジェクト）のリスト（morphs），係り先文節インデックス番号（dst），係り元文節インデックス番号のリスト（srcs）をメンバ変数に持つこととする．さらに，入力テキストのCaboChaの解析結果を読み込み，１文をChunkオブジェクトのリストとして表現し，8文目の文節の文字列と係り先を表示せよ．第5章の残りの問題では，ここで作ったプログラムを活用せよ．
+"""
+class Chunk:
+    def __init__(self, tokens):
+        m_lst = []
+        p = re.compile(u"<tok id=.*?</tok>")
+        token_lst = p.findall(tokens)
+        for j in token_lst:
+            m_lst.append(Morph(j))
+        self.morphs = m_lst # 形態素(Morphオブジェクト)のリスト
+                 
+        p = re.compile(u"<chunk id=\"(.*?)\" link=\"(.*?)\".*?</chunk>")
+        m = p.match(tokens)
+        self.dst  = m.group(2)  # 係り先の文節インデックス番号
+        self.scrs = [m.group(0)] # 係り元文節インデックス番号のリスト
+
+def make_chunk(path):
+    lst = read(path)
+    
+    chunk_lst, c_lst = [], []
+    p = re.compile(u"<chunk id=.*?</chunk>")
+    for i in lst:
+        tokens_lst = p.findall(i)
+        for j in tokens_lst:
+            c_lst.append(Chunk(j))
+        chunk_lst.append(c_lst)
+        c_lst = []
+    return chunk_lst
+
+
+def show_chunk(lst): # 8文目の文節の文字列と係り先を表示
+    for i in lst[7]:
+        moji = ""
+        for j in i.morphs:
+            moji += j.surface
+        print moji, i.dst
         
 def main():
+    # Chap5_0
     morph_lst = make_morph("./neko.txt.cabocha")
     show_morph(morph_lst)
 
+    # Chap5_1
+    chunk_lst = make_chunk("./neko.txt.cabocha")
+    show_chunk(chunk_lst)
+    
 if __name__ == "__main__":
     main()       
