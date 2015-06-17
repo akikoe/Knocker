@@ -115,10 +115,27 @@ def show_dependency(lst):
             moji = ""
             moji = add_words(j.morphs, moji)
             moji += "\t"
-            if j.dst != -1:
+            if j.dst > -1:
                 moji = add_words(i[j.dst].morphs, moji)
             print moji
-                
+
+"""
+43. 名詞を含む文節が動詞を含む文節に係るものを抽出
+名詞を含む文節が，動詞を含む文節に係るとき，これらをタブ区切り形式で抽出せよ．ただし，句読点などの記号は出力しないようにせよ．
+"""
+def show_nv_dependency(lst):
+    for i in lst:
+        for j in i: # 1文中のchunk
+            moji = ""
+            if "名詞" in [k.pos for k in j.morphs]:
+                moji = add_words(j.morphs, moji)
+                moji += "\t"
+                if j.dst > -1:
+                    morphs = i[j.dst].morphs
+                    if "動詞" in [k.pos for k in morphs]:
+                        moji = add_words(morphs, moji)
+                        print moji
+        
 def main():
     # Chap5_0
     morph_lst = make_morph("./neko.txt.cabocha")
@@ -130,6 +147,10 @@ def main():
 
     # Chap5_2
     show_dependency(chunk_lst)
+
+    # Chap5_3
+    show_nv_dependency(chunk_lst)
+
     
 if __name__ == "__main__":
     main()       
