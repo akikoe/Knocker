@@ -8,6 +8,7 @@
 
 import re
 
+
 """
 40. 係り受け解析結果の読み込み（形態素）
 形態素を表すクラスMorphを実装せよ．このクラスは表層形（surface），基本形（base），品詞（pos），品詞細分類1（pos1）をメンバ変数に持つこととする．さらに，CaboChaの解析結果（neko.txt.cabocha）を読み込み，各文をMorphオブジェクトのリストとして表現し，3文目の形態素列を表示せよ．
@@ -135,7 +136,34 @@ def show_nv_dependency(lst):
                     if "動詞" in [k.pos for k in morphs]:
                         moji = add_words(morphs, moji)
                         print moji
-        
+
+"""
+44. 係り受け木の可視化
+与えられた文の係り受け木を有向グラフとして可視化せよ．可視化には，係り受け木をDOT言語に変換し，Graphvizを用いるとよい．また，Pythonから有向グラフを直接的に可視化するには，pydotを使うとよい．
+"""
+def write_file(path, data):
+    f = open(path, "w")
+    f.write(data)
+    f.close()
+    
+def convert_dotlang(lst, i):
+    data ="digraph sample {\n" # はじまり
+    for j in lst[i]: # 1文中のchunk
+        moji, moji2 = "", ""
+        moji = add_words(j.morphs, moji)
+        if j.dst > -1:
+            moji2 = add_words(lst[i][j.dst].morphs, moji2)
+        else:
+            break
+        data += "%s -> %s;\n" % (moji, moji2)
+    data += "}"
+    
+    write_file("./token.dot", data) # DOT言語作成
+    """
+    画像に変換
+    $ dot -Tpng token.dot -o token.png
+    """
+
 def main():
     # Chap5_0
     morph_lst = make_morph("./neko.txt.cabocha")
@@ -151,6 +179,8 @@ def main():
     # Chap5_3
     show_nv_dependency(chunk_lst)
 
+    # Chap5_4
+    convert_dotlang(chunk_lst, 10)
     
 if __name__ == "__main__":
     main()       
