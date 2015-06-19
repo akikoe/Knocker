@@ -7,7 +7,7 @@
 """
 
 import re
-
+import sys
 
 """
 40. 係り受け解析結果の読み込み（形態素）
@@ -66,7 +66,7 @@ def show_morph(lst): # 3文目の形態素列を表示
 40に加えて，文節を表すクラスChunkを実装せよ．このクラスは形態素（Morphオブジェクト）のリスト（morphs），係り先文節インデックス番号（dst），係り元文節インデックス番号のリスト（srcs）をメンバ変数に持つこととする．さらに，入力テキストのCaboChaの解析結果を読み込み，１文をChunkオブジェクトのリストとして表現し，8文目の文節の文字列と係り先を表示せよ．第5章の残りの問題では，ここで作ったプログラムを活用せよ．
 """
 class Chunk:
-    def __init__(self, tokens):
+    def __init__(self, tokens, chunk_lst):
         m_lst = []
         p = re.compile(u"<tok id=.*?</tok>")
         token_lst = p.findall(tokens)
@@ -77,7 +77,9 @@ class Chunk:
         p = re.compile(u"<chunk id=\"(.*?)\" link=\"(.*?)\".*?</chunk>")
         m = p.match(tokens)
         self.dst  = int(m.group(2))  # 係り先の文節インデックス番号
-        self.scrs = [int(m.group(1))] # 係り元文節インデックス番号のリスト
+        self.scrs = [] # 係り元文節インデックス番号のリスト
+        cnum_lst = [c for c in chunk_lst if c == m.group(1)]
+        self.scrs += cnum_lst
 
 def make_chunk(path):
     lst = read(path)
@@ -87,7 +89,7 @@ def make_chunk(path):
     for i in lst:
         tokens_lst = p.findall(i)
         for j in tokens_lst:
-            c_lst.append(Chunk(j))
+            c_lst.append(Chunk(j, c_lst))
         chunk_lst.append(c_lst)
         c_lst = []
     return chunk_lst
@@ -163,7 +165,42 @@ def convert_dotlang(lst, i):
     画像に変換
     $ dot -Tpng token.dot -o token.png
     """
+    
+"""
+45. 動詞の格パターンの抽出
+今回用いている文章をコーパスと見なし，日本語の述語が取りうる格を調査したい． 動詞を述語，動詞に係っている文節の助詞を格と考え，述語と格をタブ区切り形式で出力せよ． ただし，出力は以下の仕様を満たすようにせよ．
 
+動詞を含む文節において，最左の動詞の基本形を述語とする
+述語に係る助詞を格とする
+述語に係る助詞（文節）が複数あるときは，すべての助詞をスペース区切りで辞書順に並べる
+「吾輩はここで始めて人間というものを見た」という例文（neko.txt.cabochaの8文目）を考える． この文は「始める」と「見る」の２つの動詞を含み，「始める」に係る文節は「ここで」，「見る」に係る文節は「吾輩は」と「ものを」と解析された場合は，次のような出力になるはずである．
+###
+始める  で
+見る    は を
+###
+このプログラムの出力をファイルに保存し，以下の事項をUNIXコマンドを用いて確認せよ．
+
+コーパス中で頻出する述語と格パターンの組み合わせ
+「する」「見る」「与える」という動詞の格パターン（コーパス中で出現頻度の高い順に並べよ）
+"""
+def extract_kaku_pattern(lst):
+    for i in lst[:9]:
+        for j in i: # 1文中のchunk
+            moji = ""
+            for k in j.morphs:
+                print k.surface
+                if k.pos == "動詞":
+                    moji += k.base # 動詞の基本形
+                    moji += "\t"
+                    if j.dst > -1:
+                        morphs = i[j.dst].morphs
+                        joshi_lst = [k.base for k in j.morphs if k.pos == "助詞"]
+                        if joshi_lst:
+                            moji += " ".join(joshi_lst)
+                            print moji
+                    break
+    
+    
 def main():
     # Chap5_0
     morph_lst = make_morph("./neko.txt.cabocha")
@@ -171,16 +208,19 @@ def main():
 
     # Chap5_1
     chunk_lst = make_chunk("./neko.txt.cabocha")
-    show_chunk(chunk_lst)
+    #show_chunk(chunk_lst)
 
     # Chap5_2
-    show_dependency(chunk_lst)
+    #show_dependency(chunk_lst)
 
     # Chap5_3
-    show_nv_dependency(chunk_lst)
+    #show_nv_dependency(chunk_lst)
 
     # Chap5_4
-    convert_dotlang(chunk_lst, 10)
+    #convert_dotlang(chunk_lst, 10)
+
+    # Chap5_5
+    extract_kaku_pattern(chunk_lst)
     
 if __name__ == "__main__":
     main()       
