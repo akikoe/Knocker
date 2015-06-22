@@ -77,10 +77,8 @@ class Chunk:
         p = re.compile(u"<chunk id=\"(.*?)\" link=\"(.*?)\".*?</chunk>")
         m = p.match(tokens)
         self.dst  = int(m.group(2))  # 係り先の文節インデックス番号
-        self.scrs = [] # 係り元文節インデックス番号のリスト
-        cnum_lst = [c for c in chunk_lst if c == m.group(1)]
-        self.scrs += cnum_lst
-
+        self.scrs = [i for i, c in enumerate(chunk_lst) if c.dst == int(m.group(1))] # 係り元文節インデックス番号のリスト
+        
 def make_chunk(path):
     lst = read(path)
     
@@ -184,21 +182,20 @@ def convert_dotlang(lst, i):
 「する」「見る」「与える」という動詞の格パターン（コーパス中で出現頻度の高い順に並べよ）
 """
 def extract_kaku_pattern(lst):
-    for i in lst[:9]:
+    for i in lst[7:8]:
         for j in i: # 1文中のchunk
             moji = ""
             for k in j.morphs:
-                print k.surface
                 if k.pos == "動詞":
                     moji += k.base # 動詞の基本形
                     moji += "\t"
-                    if j.dst > -1:
-                        morphs = i[j.dst].morphs
-                        joshi_lst = [k.base for k in j.morphs if k.pos == "助詞"]
-                        if joshi_lst:
-                            moji += " ".join(joshi_lst)
-                            print moji
-                    break
+                    joshi_lst = []
+                    for cnum in j.scrs:
+                        morphs = i[cnum].morphs
+                        joshi_lst += [k.surface for k in morphs if k.pos == "助詞"]
+                    if joshi_lst:
+                        moji += " ".join(joshi_lst)
+                        print moji
     
     
 def main():
@@ -208,16 +205,16 @@ def main():
 
     # Chap5_1
     chunk_lst = make_chunk("./neko.txt.cabocha")
-    #show_chunk(chunk_lst)
+    show_chunk(chunk_lst)
 
     # Chap5_2
-    #show_dependency(chunk_lst)
+    show_dependency(chunk_lst)
 
     # Chap5_3
-    #show_nv_dependency(chunk_lst)
+    show_nv_dependency(chunk_lst)
 
     # Chap5_4
-    #convert_dotlang(chunk_lst, 10)
+    convert_dotlang(chunk_lst, 10)
 
     # Chap5_5
     extract_kaku_pattern(chunk_lst)
