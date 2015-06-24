@@ -12,6 +12,7 @@
 import sys
 import re
 from matplotlib import pyplot as plt
+import matplotlib.font_manager as fm
 
 """
 30. 形態素解析結果の読み込み
@@ -130,6 +131,9 @@ def SortWordFreq(lst):
     #        print wlst[i][0], wlst[i][1]
     return wlst
 
+# フォント設定
+prop = fm.FontProperties(fname='/Library/Fonts/Osaka.ttf')
+
 """
 37. 頻度上位10語
 出現頻度が高い10語とその出現頻度をグラフ（例えば棒グラフなど）で表示せよ．
@@ -137,9 +141,9 @@ def SortWordFreq(lst):
 def DisplayTop10(wlst):
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
-    ax.set_title(u"単語の出現頻度")
-    ax.set_xlabel(u"単語")
-    ax.set_ylabel(u"出現頻度")
+    ax.set_title(u"単語の出現頻度", fontproperties=prop)
+    ax.set_xlabel(u"単語", fontproperties=prop)
+    ax.set_ylabel(u"出現頻度", fontproperties=prop)
     ax.bar(range(10), [j for i, j in wlst[:10]], align="center")
     plt.xticks(range(10), [unicode(i, "utf-8") for i, j in wlst[:10]])
     #plt.show()
@@ -152,9 +156,9 @@ def DisplayTop10(wlst):
 def DisplayWordKind(wlst):
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1) # プロット領域（1x1分割の1番目に領域を配置せよという意味）
-    ax.set_title(u"出現頻度毎の単語の種類数")
-    ax.set_xlabel(u"出現頻度")
-    ax.set_ylabel(u"単語種類数")
+    ax.set_title(u"出現頻度毎の単語の種類数", fontproperties=prop)
+    ax.set_xlabel(u"出現頻度", fontproperties=prop)
+    ax.set_ylabel(u"単語種類数", fontproperties=prop)
     ax.hist([j for i, j in wlst])
     #plt.show()
     plt.savefig("histogram.png")
@@ -166,9 +170,9 @@ def DisplayWordKind(wlst):
 def DisplayLogFig(wlst):
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1) # プロット領域（1x1分割の1番目に領域を配置せよという意味）
-    ax.set_title(u"出現頻度順位毎の単語の出現頻度")
-    ax.set_xlabel(u"出現頻度順位")
-    ax.set_ylabel(u"出現頻度")
+    ax.set_title(u"出現頻度順位毎の単語の出現頻度", fontproperties=prop)
+    ax.set_xlabel(u"出現頻度順位", fontproperties=prop)
+    ax.set_ylabel(u"出現頻度", fontproperties=prop)
     ax.loglog(range(1, len(wlst)+1), [j for i, j in wlst])
     #plt.show()
     plt.savefig("Zipf.png")
