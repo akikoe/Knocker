@@ -188,14 +188,13 @@ def extract_kaku_pattern(lst):
             for k in j.morphs:
                 if k.pos == "動詞":
                     moji += k.base # 動詞の基本形
-                    moji += "\t"
                     joshi_lst = []
                     for cnum in j.scrs:
                         morphs = i[cnum].morphs
-                        joshi_lst += [k.surface for k in morphs if k.pos == "助詞"]
-                    if joshi_lst:
-                        moji += " ".join(joshi_lst)
-                        print moji
+                        joshi_lst += [k.surface for k in morphs
+                                      if k.pos == "助詞"]
+                    moji += "\t" + " ".join(joshi_lst)
+                    print moji
 
 """
 46. 動詞の格フレーム情報の抽出
