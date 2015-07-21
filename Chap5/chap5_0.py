@@ -280,7 +280,36 @@ def find_functional_verb(lst):
                 print moji
                 moji_lst.append(moji)
     write_lines("./FuncVerb.chap57", moji_lst)
+
+"""
+48. 名詞から根へのパスの抽出
+文中のすべての名詞を含む文節に対し，その文節から構文木の根に至るパスを抽出せよ． ただし，構文木上のパスは以下の仕様を満たすものとする．
+
+各文節は（表層形の）形態素列で表現する
+パスの開始文節から終了文節に至るまで，各文節の表現を"->"で連結する
+「吾輩はここで始めて人間というものを見た」という文（neko.txt.cabochaの8文目）から，次のような出力が得られるはずである．
+
+吾輩は -> 見た
+ここで -> 始めて -> 人間という -> ものを -> 見た
+人間という -> ものを -> 見た
+ものを -> 見た
+"""
+def connect_NP(c_lst, i):
+    if i > -1:
+        phrase = " -> " + add_words(c_lst[i].morphs, "")
+        return phrase + connect_NP(c_lst, c_lst[i].dst)
+    else:
+        return ""
     
+def extract_path_fromNP(lst):
+    for i in lst[7:8]: #8行目
+        for j in i: # 1文中のchunk
+            moji = ""
+            n_lst = [k.base for k in j.morphs if k.pos == "名詞"]
+            if n_lst:
+                phrase = "".join([k.surface for k in j.morphs]) + connect_NP(i, j.dst)
+                print phrase
+
 def main():
     # Chap5_0
     morph_lst = make_morph("./neko.txt.cabocha")
@@ -305,8 +334,11 @@ def main():
     # Chap5_6
     extract_kaku_VPpattern(chunk_lst)
 
-    # Cahp5_7
+    # Chap5_7
     find_functional_verb(chunk_lst)
+
+    # Chap5_8
+    extract_path_fromNP(chunk_lst)
     
 if __name__ == "__main__":
     main()       
