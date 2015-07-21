@@ -258,9 +258,9 @@ def find_functional_verb(lst):
                                      if l.pos == "助詞"]
                             if j_lst:
                                 joshi_lst.append(j_lst[-1])
-                                phrase_lst.append("".join([l.surface for l in morphs]))
-                    joshi_lst.sort
-                    phrase_lst.sort
+                                phrase_lst.append(add_words(morphs, ""))
+                    joshi_lst.sort()
+                    phrase_lst.sort(key=lambda phrase: phrase[-1])
                     if moji > k.base:
                         moji += "\t" + " ".join(joshi_lst) + "\t" + " ".join(phrase_lst)
                         print moji
