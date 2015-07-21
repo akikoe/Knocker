@@ -240,26 +240,30 @@ def extract_kaku_VPpattern(lst):
 コーパス中で頻出する述語と助詞パターン
 """
 def find_functional_verb(lst):
-    for i in lst[:]:
+    for i in lst[948:949]:
         for j in i: # 1文中のchunk
             moji = ""
             for k in j.morphs:
                 if k.pos == "動詞":
-                    moji += k.base # 動詞の基本形
                     joshi_lst, phrase_lst = [], []
                     for cnum in j.scrs:
                         morphs = i[cnum].morphs
-                        if "を" in [k.surface for k in morphs
-                                    if k.base == "を"]:
-                            moji = "".join([k.surface for k in morphs]) + "を" + moji
+                        sahen = ""
+                        sahen += "".join([m.base + n.base for m, n in zip(morphs, morphs[1:])
+                                          if (m.pos1 + m.pos) == "サ変接続名詞" and n.base == "を"])
+                        if sahen:
+                            moji += sahen + k.base
                         else:
-                            joshi_lst += [k.surface for k in morphs
-                                          if k.pos == "助詞"]
-                            phrase_lst += ["".join([k.surface for k in morphs])]
+                            j_lst = [l.surface for l in morphs
+                                     if l.pos == "助詞"]
+                            if j_lst:
+                                joshi_lst.append(j_lst[-1])
+                                phrase_lst.append("".join([l.surface for l in morphs]))
                     joshi_lst.sort
                     phrase_lst.sort
-                    moji += "\t" + " ".join(joshi_lst) + "\t" + " ".join(phrase_lst)
-                    print moji
+                    if moji > k.base:
+                        moji += "\t" + " ".join(joshi_lst) + "\t" + " ".join(phrase_lst)
+                        print moji
 
     
 def main():
@@ -281,13 +285,12 @@ def main():
     convert_dotlang(chunk_lst, 10)
 
     # Chap5_5
-    #extract_kaku_pattern(chunk_lst)
+    extract_kaku_pattern(chunk_lst)
 
     # Chap5_6
-    #extract_kaku_VPpattern(chunk_lst)
+    extract_kaku_VPpattern(chunk_lst)
 
     # Cahp5_7
-    print "57"
     find_functional_verb(chunk_lst)
     
 if __name__ == "__main__":
