@@ -242,34 +242,44 @@ def extract_kaku_VPpattern(lst):
 このプログラムの出力をファイルに保存し，以下の事項をUNIXコマンドを用いて確認せよ．
 
 コーパス中で頻出する述語（サ変接続名詞+を+動詞）
+$ cut -f 1 ./FuncVerb.chap57 | sort | uniq -c | sort -nr
 コーパス中で頻出する述語と助詞パターン
+$ cut -f 1,2 ./FuncVerb.chap57 | sort | uniq -c | sort -nr
 """
+def write_lines(path, data):
+    f = open(path, "w")
+    for i in data:
+        f.write(i+"\n")
+    f.close()
+
 def find_functional_verb(lst):
-    for i in lst[948:949]:
+    moji_lst = []
+    for i in lst: #[948:949]:
         for j in i: # 1文中のchunk
             moji = ""
-            for k in j.morphs:
-                if k.pos == "動詞":
-                    joshi_lst, phrase_lst = [], []
-                    for cnum in j.scrs:
-                        morphs = i[cnum].morphs
-                        sahen = ""
-                        sahen += "".join([m.base + n.base for m, n in zip(morphs, morphs[1:])
-                                          if (m.pos1 + m.pos) == "サ変接続名詞" and n.base == "を"])
-                        if sahen:
-                            moji += sahen + k.base
-                        else:
-                            j_lst = [l.surface for l in morphs
-                                     if l.pos == "助詞"]
-                            if j_lst:
-                                joshi_lst.append(j_lst[-1])
-                                phrase_lst.append(add_words(morphs, ""))
-                    joshi_lst.sort()
-                    phrase_lst.sort(key=lambda phrase: phrase[-1])
-                    if moji > k.base:
-                        moji += "\t" + " ".join(joshi_lst) + "\t" + " ".join(phrase_lst)
-                        print moji
-
+            v_lst = [k.base for k in j.morphs if k.pos == "動詞"]
+            if v_lst:
+                joshi_lst, phrase_lst = [], []
+                for cnum in j.scrs:
+                    morphs = i[cnum].morphs
+                    sahen = ""
+                    sahen += "".join([m.base + n.base for m, n in zip(morphs, morphs[1:])
+                                      if (m.pos1 + m.pos) == "サ変接続名詞" and n.base == "を"])
+                    if sahen:
+                        moji += sahen + v_lst[0]
+                    else:
+                        j_lst = [l.surface for l in morphs
+                                 if l.pos == "助詞"]
+                        if j_lst:
+                            joshi_lst.append(j_lst[-1])
+                            phrase_lst.append(add_words(morphs, ""))
+                joshi_lst.sort()
+                phrase_lst.sort(key=lambda phrase: phrase[-1])
+            if moji > "" and joshi_lst:
+                moji += "\t" + " ".join(joshi_lst) + "\t" + " ".join(phrase_lst)
+                print moji
+                moji_lst.append(moji)
+    write_lines("./FuncVerb.chap57", moji_lst)
     
 def main():
     # Chap5_0
