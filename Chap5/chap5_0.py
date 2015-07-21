@@ -191,8 +191,11 @@ def extract_kaku_pattern(lst):
                     joshi_lst = []
                     for cnum in j.scrs:
                         morphs = i[cnum].morphs
-                        joshi_lst += [k.surface for k in morphs
-                                      if k.pos == "助詞"]
+                        j_lst = [l.surface for l in morphs
+                                 if l.pos == "助詞"]
+                        if j_lst:
+                            joshi_lst.append(j_lst[-1])
+
                     moji += "\t" + " ".join(joshi_lst)
                     print moji
 
@@ -217,9 +220,11 @@ def extract_kaku_VPpattern(lst):
                     joshi_lst, phrase_lst = [], []
                     for cnum in j.scrs:
                         morphs = i[cnum].morphs
-                        joshi_lst  += [k.surface for k in morphs
-                                                if k.pos == "助詞"]
-                        phrase_lst += ["".join([k.surface for k in morphs])]
+                        j_lst  = [k.surface for k in morphs
+                                  if k.pos == "助詞"]
+                        if j_lst:
+                            joshi_lst.append(j_lst[-1])
+                            phrase_lst.append(add_words(morphs, ""))
                     moji += "\t" + " ".join(joshi_lst) + "\t" + " ".join(phrase_lst)
                     print moji
 
