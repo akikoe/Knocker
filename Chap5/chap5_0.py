@@ -310,6 +310,67 @@ def extract_path_fromNP(lst):
                 phrase = "".join([k.surface for k in j.morphs]) + connect_NP(i, j.dst)
                 print phrase
 
+"""
+49. 名詞間の係り受けパスの抽出
+文中のすべての名詞句のペアを結ぶ最短係り受けパスを抽出せよ．ただし，名詞句ペアの文節番号がiとj（i<j）のとき，係り受けパスは以下の仕様を満たすものとする．
+
+問題48と同様に，パスは開始文節から終了文節に至るまでの各文節の表現（表層形の形態素列）を"->"で連結して表現する
+文節iとjに含まれる名詞句はそれぞれ，XとYに置換する
+また，係り受けパスの形状は，以下の2通りが考えられる．
+
+文節iから構文木の根に至る経路上に文節jが存在する場合: 文節iから文節jのパスを表示
+上記以外で，文節iと文節jから構文木の根に至る経路上で共通の文節kで交わる場合: 文節iから文節kに至る直前のパスと文節jから文節kに至る直前までのパス，文節kの内容を"|"で連結して表示
+例えば，「吾輩はここで始めて人間というものを見た。」という文（neko.txt.cabochaの8文目）から，次のような出力が得られるはずである．
+
+Xは | Yで -> 始めて -> 人間という -> ものを | 見た
+Xは | Yという -> ものを | 見た
+Xは | Yを | 見た
+Xで -> 始めて -> Y
+Xで -> 始めて -> 人間という -> Y
+Xという -> Y
+"""
+
+def make_dstlst(c_lst, i):
+    if i > -1: return [i] + make_dstlst(c_lst, c_lst[i].dst)
+    else:      return []
+
+def add_NPpath(c_lst, jdst_lst, n, moji):
+    phrase = ""
+    for k in c_lst[n].morphs:
+        if k.pos == "名詞": phrase += moji
+        else:               phrase += k.base
+    for k in jdst_lst:     # 係り受け順indexリスト
+        phrase += " -> " + "".join([k.surface for k in c_lst[k].morphs])
+    return phrase
+
+def extract_shortest_NPpath(lst):
+    for i in lst[7:8]: #8行目
+        n_lst = []
+        for num, j in enumerate(i): # 1文中のchunk
+            for k in j.morphs:      # 名詞句のchunk numを取得
+                if k.pos == "名詞":
+                    n_lst.append(num)
+                    break
+        for num, n in enumerate(n_lst):      # 名詞のあるchunk番号
+            j  = i[n]
+            jdst_lst = make_dstlst(i, j.dst) # iの係り受け順、文節番号リスト
+            for m in n_lst[num+1:]:
+                k = i[m]
+                if m in jdst_lst: # iから根までの経路上に、jが存在
+                    idx = jdst_lst.index(m)
+                    path = add_NPpath(i, jdst_lst[:idx], n, "X")
+                    path += " -> " + add_NPpath(i, [], m, "Y")
+                else:             # 経路上で共通のkが存在
+                    kdst_lst = make_dstlst(i, k.dst) # jの係り受け順、文節番号リスト
+                    k_th = min(set(jdst_lst) & set(kdst_lst))
+                    j_idk = jdst_lst.index(k_th)
+                    k_idk = kdst_lst.index(k_th)
+                    path =  add_NPpath(i, jdst_lst[:j_idk], n, "X")
+                    path += " | " + add_NPpath(i, kdst_lst[:k_idk], m, "Y")
+                    path += " | " + "".join([k.surface for k in i[i[k_th].dst].morphs])
+                print path
+                    
+            
 def main():
     # Chap5_0
     morph_lst = make_morph("./neko.txt.cabocha")
@@ -339,6 +400,9 @@ def main():
 
     # Chap5_8
     extract_path_fromNP(chunk_lst)
+
+    # Chap5_9
+    extract_shortest_NPpath(chunk_lst)
     
 if __name__ == "__main__":
     main()       
