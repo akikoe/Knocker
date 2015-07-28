@@ -341,6 +341,7 @@ def add_NPpath(c_lst, jdst_lst, n, moji):
         else:               phrase += k.base
     for k in jdst_lst:     # 係り受け順indexリスト
         phrase += " -> " + "".join([k.surface for k in c_lst[k].morphs])
+    phrase = re.sub("XX+", "X", phrase)
     return phrase
 
 def extract_shortest_NPpath(lst):
