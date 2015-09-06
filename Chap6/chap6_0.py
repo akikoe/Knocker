@@ -27,7 +27,8 @@ def split_sen(path):
             sen = "".join([i+j for i, j in zip(line, replace_lst)])
         else:
             sen = line.rstrip()
-        sen_lst.append(sen)
+        if sen:
+            sen_lst.append(sen)
     return sen_lst
 
 def main():
