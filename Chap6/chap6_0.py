@@ -15,7 +15,8 @@ import re
 (. or ; or : or ? or !) → 空白文字 → 英大文字というパターンを文の区切りと見なし，入力された文書を1行1文の形式で出力せよ．
 """
 
-def output_line(path):
+def split_sen(path):
+    sen_lst = []
     lst = open(path, 'r').readlines()
     p = re.compile(u"[.;:?!]\s[A-Z]")
     for line in lst:
@@ -23,12 +24,15 @@ def output_line(path):
             replace_lst = p.findall(line)
             replace_lst = [i.replace(" ", "\n") for i in replace_lst] + [""]
             line = p.split(line.rstrip())
-            print ("".join([i+j for i, j in zip(line, replace_lst)]))
+            sen = "".join([i+j for i, j in zip(line, replace_lst)])
         else:
-            print (line.rstrip())
+            sen = line.rstrip()
+        sen_lst.append(sen)
+    return sen_lst
 
 def main():
-    output_line("./nlp.txt")
+    sen_lst = split_sen("./nlp.txt")
+    print ("\n".join(sen_lst))
 
 if __name__ == '__main__':
     main()
