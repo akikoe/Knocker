@@ -18,17 +18,9 @@ import re
 def split_sen(path):
     sen_lst = []
     lst = open(path, 'r').readlines()
-    p = re.compile(u"[.;:?!]\s[A-Z]")
+    p = re.compile(u"([.;:?!])\s([A-Z])")
     for line in lst:
-        if p.search(line):
-            replace_lst = p.findall(line)
-            replace_lst = [i.replace(" ", "\n") for i in replace_lst] + [""]
-            line = p.split(line.rstrip())
-            sen = "".join([i+j for i, j in zip(line, replace_lst)])
-        else:
-            sen = line.rstrip()
-        if sen:
-            sen_lst.append(sen)
+        sen_lst.extend(re.sub(p, r"\1\n\2", line.rstrip()).split("\n"))
     return sen_lst
 
 def main():
