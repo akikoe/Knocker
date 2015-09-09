@@ -9,7 +9,7 @@
 """
 
 import chap6_3
-import re
+import re, pydot
 
 """
 57. 係り受け解析
@@ -17,23 +17,18 @@ Stanford Core NLPの係り受け解析の結果（collapsed-dependencies）を�
 """
 
 def convert_dotlang(tree):
-    data = "digraph sample {\n"
-    coref_lst = []
+    i = 0
     root = tree.getroot()
     for depend in root.findall('.//dependencies'):
         if depend.get('type') == "collapsed-dependencies":
+            data = []
             for dep in depend.findall('dep'):
                 g = dep.find('governor').text
                 d = dep.find('dependent').text
-                data += "{} -> {};\n".format(g, d)
-        else:
-            data += "}\ndigraph sample {\n" # はじまり
-    open("./token.dot", "w").write(data) # DOT言語作成
-    
-"""
-    画像に変換
-    $ dot -Tpng token.dot -o token.png                                       
-"""
+                data.append((g, d))
+            g = pydot.graph_from_edges(data)
+            g.write_jpeg('./fig/sen{}.jpg'.format(i), prog='dot')
+            i += 1
 
 def main():
     tree = chap6_3.read_xml("./nlp.txt.xml")
