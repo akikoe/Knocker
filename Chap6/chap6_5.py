@@ -8,30 +8,26 @@
 英語のテキスト（nlp.txt）に対して，以下の処理を実行せよ．
 """
 
+import chap6_3
 import re
 
 """
 55. 固有表現抽出
 入力文中の人名をすべて抜き出せ．
 """
-def tokenize_xml(path):
-    name = ""
+def name_xml(tree):
     name_lst = []
-    lst = open(path, 'r').readlines()
-    wp = re.compile(r"<word>(.*?)</word>")
-    pp = re.compile(r"<NER>PERSON</NER>")
-    for line in lst:
-        wm = wp.match(line.lstrip())
-        pm = pp.match(line.lstrip())
-        if wm:
-            name = wm.group(1)
-        if pm:
-            name_lst.append(name)
-            name = ""
+    root = tree.getroot()
+    for token in root.findall('.//token'):
+        wrd = token.find('word').text
+        if token.find('NER').text == "PERSON":
+            sen = "{}".format(wrd)
+            name_lst.append(sen)
     return name_lst
 
 def main():
-    name_lst = tokenize_xml("./nlp.txt.xml")
+    tree = chap6_3.read_xml("./nlp.txt.xml")
+    name_lst = name_xml(tree)
     print ("\n".join(name_lst))
                             
 if __name__ == '__main__':
