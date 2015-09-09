@@ -18,24 +18,28 @@ Stanford Core NLPの係り受け解析の結果（collapsed-dependencies）に�
 主語: 述語からnsubj関係にある子（dependent）
 目的語: 述語からdobj関係にある子（dependent）
 """
-def coreference(tree):
-    coref_lst = []
+def ext_tuple(tree):
+    sen_lst = []
     root = tree.getroot()
-    for corefer in root.findall('.//coreference'):
-        for mention in corefer.findall('mention'):
-            if mention.get('representative') == "true":
-                rep_word = mention.find('text').text
-            else:
-                cor_word = mention.find('text').text
-                coref_lst.append(rep_word + " ("+ cor_word + ")")
-    return coref_lst
+    for depend in root.findall('.//dependencies'):
+        if depend.get('type') == "collapsed-dependencies":
+            data = []
+            nsubj, dobj = set(), set()
+            for dep in depend.findall('dep'):
+                if dep.get('type') == 'nsubj':
+                    nsubj.add((dep.find('governor').text, dep.find('dependent').text))
+                elif dep.get('type') == 'dobj':
+                    dobj.add((dep.find('governor').text, dep.find('dependent').text))
+            verb_lst = set()
+            for i,j in list(nsubj):
+                for k, l in list(dobj):
+                    if i == k: sen_lst.append("{}\t{}\t{}".format(j, i, l))
+    return sen_lst
 
 def main():
     tree = chap6_3.read_xml("./nlp.txt.xml")
-    coref_lst = coreference(tree)
-    print ("\n".join(coref_lst))
-
-def main():
+    sen_lst = ext_tuple(tree)
+    print ("\n".join(sen_lst))
 
 if __name__ == '__main__':
     main()
