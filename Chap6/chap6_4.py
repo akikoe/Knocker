@@ -9,7 +9,6 @@
 """
 
 import chap6_3
-import re
 
 """
 54. 品詞タグ付け

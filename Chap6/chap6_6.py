@@ -9,7 +9,6 @@
 """
 
 import chap6_3
-import re
 
 """
 56. 共参照解析

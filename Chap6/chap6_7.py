@@ -9,7 +9,7 @@
 """
 
 import chap6_3
-import re, pydot
+import pydot
 
 """
 57. 係り受け解析

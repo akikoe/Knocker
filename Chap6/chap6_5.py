@@ -9,7 +9,6 @@
 """
 
 import chap6_3
-import re
 
 """
 55. 固有表現抽出

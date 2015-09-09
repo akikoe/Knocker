@@ -8,7 +8,6 @@
 英語のテキスト（nlp.txt）に対して，以下の処理を実行せよ．
 """
 import xml.etree.ElementTree as ET
-import re
 
 """
 53. Tokenization
