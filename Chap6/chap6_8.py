@@ -27,13 +27,14 @@ def ext_tuple(tree):
             nsubj, dobj = set(), set()
             for dep in depend.findall('dep'):
                 if dep.get('type') == 'nsubj':
-                    nsubj.add((dep.find('governor').text, dep.find('dependent').text))
+                     # idxで見ないと重複動詞の場合に出力結果がでる
+                    nsubj.add((dep.find('governor').text, dep.find('dependent').text, dep.find('governor').get('idx')))
                 elif dep.get('type') == 'dobj':
-                    dobj.add((dep.find('governor').text, dep.find('dependent').text))
+                    dobj.add((dep.find('governor').text, dep.find('dependent').text, dep.find('governor').get('idx')))
             verb_lst = set()
-            for i,j in list(nsubj):
-                for k, l in list(dobj):
-                    if i == k: sen_lst.append("{}\t{}\t{}".format(j, i, l))
+            for i, j, m in list(nsubj):
+                for k, l, n in list(dobj):
+                    if m == n: sen_lst.append("{}\t{}\t{}".format(j, i, l))
     return sen_lst
 
 def main():
